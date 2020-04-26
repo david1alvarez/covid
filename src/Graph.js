@@ -1,0 +1,97 @@
+import React, { Component } from 'react';
+import '../node_modules/react-vis/dist/style.css';
+import { XYPlot, LineSeries } from 'react-vis';
+import './Graph.css';
+
+class Graph extends Component {
+    constructor() {
+        super();
+        this.state = {data: []};
+
+        this.GetWorldStatistics = this.GetWorldStatistics.bind(this);
+    }
+    GetWorldStatistics() {
+        fetch('https://covidtracking.com/api/v1/us/daily.json', {method: 'GET', headers: {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json'
+        }} )
+            .then((response) =>{
+                return response.json();
+            })
+            .then(json => {
+                this.setState({ data: json});
+                this.render()
+            })
+    }
+
+    componentDidMount() {
+        this.GetWorldStatistics();
+    }
+
+    // convert yyyymmdd integer to Date object
+    getDate(numberDate) {
+        const year = Math.floor(numberDate / 10000);
+        const month = Math.floor((numberDate) / 100) - 1 - (year * 100);
+        const day = numberDate - (year * 10000) - ((month + 1)* 100);
+        const date = new Date(year, month, day);
+        return date;
+    }
+
+    // return the number of days since a given date
+    getDaysSince(date) {
+        const now = new Date();
+        let diffTime = Math.abs(now - date);
+        return Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+    }
+
+    // get derivations of the discreet data
+    derive(data, derivationNumber) {
+        if (derivationNumber < 0) {
+            return;
+        }
+
+        if (derivationNumber === 0) {
+            return data;
+        }
+
+        for (let i = 0; i < data.length - 1; i++) {
+            data[i].positive = data[i].positive - data[i+1].positive ;
+        }
+
+        data.pop();
+        derivationNumber--;
+        return this.derive(data, derivationNumber);
+    }
+
+    // get graphable array
+    cumulativeData(data) {
+        data = data.map(datum => {
+            return {x: -1 * this.getDaysSince(this.getDate(datum.date)), y: datum.positive}})
+        return data
+    }
+
+    render() {
+        let cumulativeData = this.cumulativeData(this.state.data);
+        let firstDerivativeData = this.cumulativeData(this.derive(this.state.data, 1));
+        let secondDerivativeData = this.cumulativeData(this.derive(this.state.data, 2));
+
+        return (
+            <div className="Graph">
+                <div>cumulative global cases</div>
+                <XYPlot height={300} width={300}>
+                    <LineSeries data={cumulativeData} />
+                </XYPlot>
+                <div>calculated change in global cases/day</div>
+                <XYPlot height={300} width={300}>
+                    <LineSeries data={firstDerivativeData} />
+                </XYPlot>
+                <div>acceleration of global cases/day</div>
+                <XYPlot height={300} width={300}>
+                    <LineSeries data={secondDerivativeData} />
+                </XYPlot>
+            </div>
+        );
+    }
+}
+
+export default Graph;
