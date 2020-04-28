@@ -9,24 +9,18 @@ class DataSeries extends Component {
     }
 
     render() {
-        let { data, colors, xScale, yScale } = this.props;
+        let { data, xScale, yScale } = this.props;
 
         let line = d3.line()
             .x((d) => {return xScale(d.x);})
             .y((d) => {return yScale(d.y);})
             .curve(d3.curveCardinal);
 
-        let lines = data.points.map((series, id) => {
-            return (
-                <Line
-                    path={line(series)}
-                    stroke={colors(id)}
-                    key={id}
-                />)
-        })
-
+        console.log(data)
         return (
-            <g>{lines}</g>
+            <Line
+                path={line(data.points)}
+            />
         )
     }
 }

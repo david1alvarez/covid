@@ -25,19 +25,22 @@ class Graph extends Component {
             return response.json();
         })
         .then(json => {
-            this.setState({ data: json, covidData: {
-                yMin: d3.min(json, function(datum) {return datum.death}),
-                yMax: d3.max(json, function(datum) {
-                    console.log(datum.death)
-                    return datum.death}),
-                points: [
-                    //THE Y MAX IS GETTING RESET, AND THE HIGHER UP SHIT ISNT GETTING RENDERED
-                    this.cumulativeData(json),
-                    this.cumulativeData(this.derive(json, 1))
-                ],
-                minDate: this.getDate(d3.min(json, function(datum) {return datum.date})),
-                maxDate: this.getDate(d3.max(json, function(datum) {return datum.date}))
-            }})
+            this.setState({ data: json, covidData: [
+                {
+                    points: this.cumulativeData(json),
+                    yMin: d3.min(json, function(datum) {return datum.death}),
+                    yMax: d3.max(json, function(datum) {return datum.death}),
+                    minDate: this.getDate(d3.min(json, function(datum) {return datum.date})),
+                    maxDate: this.getDate(d3.max(json, function(datum) {return datum.date}))
+                },
+                {
+                    points: this.cumulativeData(this.derive(json, 1)),
+                    yMin: d3.min(json, function(datum) {return datum.death}),
+                    yMax: d3.max(json, function(datum) {return datum.death}),
+                    minDate: this.getDate(d3.min(json, function(datum) {return datum.date})),
+                    maxDate: this.getDate(d3.max(json, function(datum) {return datum.date}))
+                }
+            ]})
             this.render()
         })
     }
@@ -77,10 +80,10 @@ class Graph extends Component {
     }
 
     isDataLoaded() {
-        let pointsExists = !!this.state?.covidData?.points;
+        let pointsExists = !!this.state?.covidData[0];
         let pointsHasData = false;
         if (pointsExists) {
-            pointsHasData = this.state?.covidData?.points[0].length > 0;
+            pointsHasData = !!this.state.covidData[0].points && this.state.covidData[0].points.length > 0;
         }
         return pointsHasData;
     }
@@ -89,11 +92,18 @@ class Graph extends Component {
         return (
             <div className="Graph">
                 { this.isDataLoaded() ? (
-                    <LineChart 
-                        data={this.state.covidData}
-                        width={600}
-                        height={300}
-                    />) 
+                    <div>
+                        <LineChart 
+                            data={this.state.covidData[0]}
+                            width={600}
+                            height={300}
+                        /> 
+                        <LineChart 
+                            data={this.state.covidData[1]}
+                            width={600}
+                            height={300}
+                        />
+                    </div>)
                     : ( <div>loading...</div>)}
             </div>
         );

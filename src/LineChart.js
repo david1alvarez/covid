@@ -26,8 +26,6 @@ class LineChart extends Component {
                     xScale={xScale}
                     yScale={yScale}
                     data={data}
-                    width={width}
-                    height={height}
                 />
             </svg>
         )
