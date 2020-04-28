@@ -24,7 +24,7 @@ class LineChart extends Component {
                         .range([height, 10])
         
         let yAxis = d3.axisLeft(yScale)
-        yAxis.ticks(10);
+        yAxis.ticks(5);
         d3.select(`[title="${data.title}"]`).append("g").attr("transform", `translate(40,0)`).call(yAxis)
     }
 
