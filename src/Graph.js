@@ -31,14 +31,16 @@ class Graph extends Component {
                     yMin: d3.min(json, function(datum) {return datum.death}),
                     yMax: d3.max(json, function(datum) {return datum.death}),
                     minDate: this.getDate(d3.min(json, function(datum) {return datum.date})),
-                    maxDate: this.getDate(d3.max(json, function(datum) {return datum.date}))
+                    maxDate: this.getDate(d3.max(json, function(datum) {return datum.date})),
+                    title: "US total deaths"
                 },
                 {
                     points: this.cumulativeData(this.derive(json, 1)),
                     yMin: d3.min(json, function(datum) {return datum.death}),
                     yMax: d3.max(json, function(datum) {return datum.death}),
                     minDate: this.getDate(d3.min(json, function(datum) {return datum.date})),
-                    maxDate: this.getDate(d3.max(json, function(datum) {return datum.date}))
+                    maxDate: this.getDate(d3.max(json, function(datum) {return datum.date})),
+                    title: "US deaths/day"
                 }
             ]})
             this.render()

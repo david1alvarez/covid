@@ -22,6 +22,13 @@ class LineChart extends Component {
 
         return (
             <svg width={width} height={height}>
+                <text
+                    x={width/2}
+                    y={15}
+                    textAnchor="middle"
+                    fontSize="16px"
+                    fill="white"
+                >{data.title}</text>
                 <DataSeries 
                     xScale={xScale}
                     yScale={yScale}
