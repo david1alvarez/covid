@@ -8,32 +8,54 @@ class LineChart extends Component {
         height: 300
     }
 
-    render() {
+    componentDidMount() {
         let { width, height, data } = this.props;
 
         let xScale = d3.scaleTime()
                         .domain([data.minDate, data.maxDate])
                         .range([0, width])
-        xScale.ticks(d3.timeDay.every(5));
+    
+        let xAxis = d3.axisBottom(xScale)
+        xAxis.ticks(d3.timeMonth.every(1));
+        d3.select(`[title="${data.title}"]`).append("g").attr("transform", `translate(40,${height})`).call(xAxis)
 
         let yScale = d3.scaleLinear()
                         .domain([data.yMin, data.yMax])
                         .range([height, 10])
+        
+        let yAxis = d3.axisLeft(yScale)
+        yAxis.ticks(10);
+        d3.select(`[title="${data.title}"]`).append("g").attr("transform", `translate(40,0)`).call(yAxis)
+    }
 
+
+    render() {
+        let { width, height, data } = this.props;
+
+        let xScale = d3.scaleTime()
+                        .domain([data.minDate, data.maxDate])
+                        .range([40, width])
+        xScale.ticks(5);
+
+        let yScale = d3.scaleLinear()
+                        .domain([data.yMin, data.yMax])
+                        .range([height, 0])
         return (
-            <svg width={width} height={height}>
-                <text
-                    x={width/2}
-                    y={15}
-                    textAnchor="middle"
-                    fontSize="16px"
-                    fill="white"
-                >{data.title}</text>
-                <DataSeries 
-                    xScale={xScale}
-                    yScale={yScale}
-                    data={data}
-                />
+            <svg width={width+30} height={height+30} title={data.title}>
+                <g>
+                    <text
+                        x={(width+30)/2}
+                        y={15}
+                        textAnchor="middle"
+                        fontSize="16px"
+                        fill="white"
+                    >{data.title}</text>
+                    <DataSeries 
+                        xScale={xScale}
+                        yScale={yScale}
+                        data={data}
+                    />
+                </g>
             </svg>
         )
     }

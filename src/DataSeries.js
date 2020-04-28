@@ -16,7 +16,6 @@ class DataSeries extends Component {
             .y((d) => {return yScale(d.y);})
             .curve(d3.curveCardinal);
 
-        console.log(data)
         return (
             <Line
                 path={line(data.points)}
