@@ -15,5 +15,4 @@ ReactDOM.render(
   document.getElementById('root')
 );
 
-//https://create-react-app.dev/docs/making-a-progressive-web-app/
 serviceWorker.register();
