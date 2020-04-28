@@ -7,7 +7,7 @@ import LineChart from './LineChart';
 class Graph extends Component {
     constructor() {
         super();
-        this.state = {data: [], graphData: {}};
+        this.state = {data: [], covidData: {}};
 
         this.GetWorldStatistics = this.GetWorldStatistics.bind(this);
     }
@@ -25,15 +25,18 @@ class Graph extends Component {
             return response.json();
         })
         .then(json => {
-            this.setState({ data: json, graphData: {
+            this.setState({ data: json, covidData: {
+                yMin: d3.min(json, function(datum) {return datum.death}),
+                yMax: d3.max(json, function(datum) {
+                    console.log(datum.death)
+                    return datum.death}),
                 points: [
+                    //THE Y MAX IS GETTING RESET, AND THE HIGHER UP SHIT ISNT GETTING RENDERED
                     this.cumulativeData(json),
                     this.cumulativeData(this.derive(json, 1))
                 ],
                 minDate: this.getDate(d3.min(json, function(datum) {return datum.date})),
-                maxDate: this.getDate(d3.max(json, function(datum) {return datum.date})),
-                yMin: d3.min(json, function(datum) {return datum.death}),
-                yMax: d3.max(json, function(datum) {return datum.death})
+                maxDate: this.getDate(d3.max(json, function(datum) {return datum.date}))
             }})
             this.render()
         })
@@ -74,10 +77,10 @@ class Graph extends Component {
     }
 
     isDataLoaded() {
-        let pointsExists = !!this.state?.graphData?.points;
+        let pointsExists = !!this.state?.covidData?.points;
         let pointsHasData = false;
         if (pointsExists) {
-            pointsHasData = this.state?.graphData?.points[0].length > 0;
+            pointsHasData = this.state?.covidData?.points[0].length > 0;
         }
         return pointsHasData;
     }
@@ -87,7 +90,7 @@ class Graph extends Component {
             <div className="Graph">
                 { this.isDataLoaded() ? (
                     <LineChart 
-                        data={this.state.graphData}
+                        data={this.state.covidData}
                         width={600}
                         height={300}
                     />) 
