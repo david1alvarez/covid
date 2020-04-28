@@ -14,19 +14,6 @@ class Graph extends Component {
 
     componentDidMount() {
         this.GetWorldStatistics()
-
-        this.setState({graphData: {
-            points: [
-                // cumulativedata needs to return the dates, not the numbers
-                this.cumulativeData(this.state.data),
-                this.cumulativeData(this.derive(this.state.data, 1))
-            ],
-            xValues: this.state.data.map(datum => {return this.getDate(datum.date)}),
-            minDate: this.getDate(d3.min(this.state.data, function(datum) {return datum.date})),
-            maxDate: this.getDate(d3.max(this.state.data, function(datum) {return datum.date})),
-            yMin: d3.min(this.state.data, function(datum) {return datum.positive}),
-            yMax: d3.max(this.state.data, function(datum) {return datum.positive})
-        }})
     }
 
     GetWorldStatistics() {
@@ -38,17 +25,15 @@ class Graph extends Component {
             return response.json();
         })
         .then(json => {
-            // this.setState({ data: json});
             this.setState({ data: json, graphData: {
                 points: [
-                    this.cumulativeData(json)//,
-                    // this.cumulativeData(this.derive(json, 1))
+                    this.cumulativeData(json),
+                    this.cumulativeData(this.derive(json, 1))
                 ],
-                xValues: json.map(datum => {return this.getDate(datum.date)}),
                 minDate: this.getDate(d3.min(json, function(datum) {return datum.date})),
                 maxDate: this.getDate(d3.max(json, function(datum) {return datum.date})),
-                yMin: d3.min(json, function(datum) {return datum.positive}),
-                yMax: d3.max(json, function(datum) {return datum.positive})
+                yMin: d3.min(json, function(datum) {return datum.death}),
+                yMax: d3.max(json, function(datum) {return datum.death})
             }})
             this.render()
         })
@@ -63,13 +48,6 @@ class Graph extends Component {
         return date;
     }
 
-    // return the number of days since a given date
-    getDaysSince(date) {
-        const now = new Date();
-        let diffTime = Math.abs(now - date);
-        return Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-    }
-
     // get derivations of the discreet data
     derive(data, derivationNumber) {
         if (derivationNumber < 0) {
@@ -81,24 +59,18 @@ class Graph extends Component {
         }
 
         for (let i = 0; i < data.length - 1; i++) {
-            data[i].positive = data[i].positive - data[i+1].positive ;
+            data[i].death = data[i].death - data[i+1].death ;
         }
 
         data.pop();
-        derivationNumber--;
-        return this.derive(data, derivationNumber);
+        return this.derive(data, --derivationNumber);
     }
 
     // get graphable array
     cumulativeData(data) {
         data = data.map(datum => {
-            return { x: this.getDate(datum.date), y: datum.positive}})
+            return { x: this.getDate(datum.date), y: datum.death? datum.death : 0}})
         return data
-    }
-
-    getMonthRange(startDate, endDate) {
-        return endDate.getMonth() - startDate.getMonth()
-            + (12 * (endDate.getFullYear() - startDate.getFullYear()))
     }
 
     isDataLoaded() {

@@ -3,10 +3,6 @@ import DataSeries from './DataSeries';
 import * as d3 from 'd3';
 
 class LineChart extends Component {
-    // constructor() {
-    //     super()
-    // }
-
     static defaultProps = {
         width: 600,
         height: 300
@@ -15,7 +11,6 @@ class LineChart extends Component {
     render() {
         let { width, height, data } = this.props;
 
-        // https://stackoverflow.com/questions/35930047/d3-line-chart-x-line-function-always-renders-nan
         let xScale = d3.scaleTime()
                         .domain([data.minDate, data.maxDate])
                         .range([0, width])

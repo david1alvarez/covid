@@ -1,10 +1,6 @@
 import React, { Component } from 'react'
 
 class Line extends Component {
-    // constructor() {
-    //     super()
-    // }
-
     static defaultProps = {
         stroke: 'white',
         fill: 'none',
