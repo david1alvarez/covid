@@ -6,7 +6,7 @@ class App extends React.Component {
     super();
     this.state = {data: []}
 
-    this.GetWorldStatistics = this.GetWorldStatistics.bind(this);
+    // this.GetWorldStatistics = this.GetWorldStatistics.bind(this);
   }
 
 
@@ -28,7 +28,7 @@ class App extends React.Component {
     return (
       <div className="App">
         <header className="App-header">
-          <div>Global stats:</div>
+          <div>Global COVID19 stats:</div>
           <div>cases: {this.state.data.cases}</div>
           <div>deaths: {this.state.data.deaths}</div>
           <div>recovered: {this.state.data.recovered}</div>

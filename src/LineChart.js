@@ -21,11 +21,12 @@ class LineChart extends Component {
 
         let yScale = d3.scaleLinear()
                         .domain([data.yMin, data.yMax])
-                        .range([height, 10])
+                        .range([height, 30])
         
         let yAxis = d3.axisLeft(yScale)
         yAxis.ticks(5);
         d3.select(`[title="${data.title}"]`).append("g").attr("transform", `translate(40,0)`).call(yAxis)
+        d3.select(`[title="${data.title}"]`).attr("viewBox", "0 0 630 330")
     }
 
 
@@ -39,9 +40,9 @@ class LineChart extends Component {
 
         let yScale = d3.scaleLinear()
                         .domain([data.yMin, data.yMax])
-                        .range([height, 0])
+                        .range([height, 30])
         return (
-            <svg width={width+30} height={height+30} title={data.title}>
+            <svg width={"80vw"} height={"50vw"} title={data.title}>
                 <g>
                     <text
                         x={(width+30)/2}
