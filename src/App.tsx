@@ -1,11 +1,22 @@
 import React from 'react';
 import './App.css';
 
+interface GlobalData {
+  cases: number;
+  deaths: number;
+  recovered: number;
+}
+
+interface GlobalState {
+  data: GlobalData
+}
+
 class App extends React.Component {
-  constructor() {
-    super();
-    this.state = {data: []}
-  }
+  state: GlobalState = {data: {
+    cases: 0,
+    deaths: 0,
+    recovered: 0
+  }}
 
 
   GetWorldStatistics() {
@@ -13,7 +24,7 @@ class App extends React.Component {
       .then((response) =>{
         return response.json();
       })
-      .then(json => {
+      .then((json: GlobalData) => {
         this.setState({ data: json});
       })
   }

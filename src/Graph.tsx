@@ -12,12 +12,12 @@ interface ApiData {
     death: number;
 }
 
-interface Points {
-    x: any;
-    y: any;
+export interface Points {
+    x: Date;
+    y: number;
 }
 
-interface CovidData {
+export interface CovidData {
     points: Points[];
     yMax: any;
     yMin: any;
@@ -31,9 +31,6 @@ interface CovidState {
 }
 
 class Graph extends Component {
-    constructor(state: CovidState) {
-        super(state);
-    }
     state: CovidState = {covidData: []};
 
     componentDidMount() {
@@ -84,7 +81,7 @@ class Graph extends Component {
     // convert yyyymmdd integer to Date object
     getDate(numberDate?: number) {
         if(!numberDate) {
-            return new Date;
+            return new Date();
         }
         const year = Math.floor(numberDate / 10000);
         const month = Math.floor((numberDate) / 100) - 1 - (year * 100);
@@ -96,7 +93,7 @@ class Graph extends Component {
     // get derivations of the discreet data
     derive(data: ApiData[], derivationNumber: number): ApiData[] {
         if (derivationNumber < 0) {
-            throw new Error;
+            throw new Error();
         }
 
         if (derivationNumber === 0) {
