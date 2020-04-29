@@ -1,4 +1,4 @@
-import React, { Component } from 'react'
+import React, { Component } from "react";
 
 interface Props {
     path: string | null;
@@ -7,15 +7,11 @@ interface Props {
     strokeWidth: number;
 }
 
-class Line extends Component <Props>{
-    static defaultProps = {
-        stroke: 'white',
-        fill: 'none',
-        strokeWidth: 3
-    }
+class Line extends Component<Props> {
+    static defaultProps = { stroke: "white", fill: "none", strokeWidth: 3 };
 
     render() {
-        let {path, stroke, fill, strokeWidth } = this.props;
+        let { path, stroke, fill, strokeWidth } = this.props;
         if (path) {
             return (
                 <path
@@ -24,7 +20,7 @@ class Line extends Component <Props>{
                     fill={fill}
                     strokeWidth={strokeWidth}
                 />
-            )
+            );
         }
     }
 }
