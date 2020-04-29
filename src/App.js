@@ -5,8 +5,6 @@ class App extends React.Component {
   constructor() {
     super();
     this.state = {data: []}
-
-    // this.GetWorldStatistics = this.GetWorldStatistics.bind(this);
   }
 
 

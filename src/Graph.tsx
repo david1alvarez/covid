@@ -1,14 +1,40 @@
 import React, { Component } from 'react';
 import '../node_modules/react-vis/dist/style.css';
-import * as d3 from 'd3';
+import * as d3 from 'd3-array';
 import './Graph.css';
 import LineChart from './LineChart';
 
+interface ApiData {
+    date: number;
+    state?: string;
+    positive: number;
+    negative: number;
+    death: number;
+}
+
+interface Points {
+    x: any;
+    y: any;
+}
+
+interface CovidData {
+    points: Points[];
+    yMax: any;
+    yMin: any;
+    minDate: Date;
+    maxDate: Date;
+    title: string;
+}
+
+interface CovidState {
+    covidData: CovidData[]
+}
+
 class Graph extends Component {
-    constructor() {
-        super();
-        this.state = {covidData: {}};
+    constructor(state: CovidState) {
+        super(state);
     }
+    state: CovidState = {covidData: []};
 
     componentDidMount() {
         this.GetWorldStatistics()
@@ -22,9 +48,9 @@ class Graph extends Component {
         .then((response) =>{
             return response.json();
         })
-        .then(json => {
+        .then((json: ApiData[]) => {
             let graphSettings = {
-                yMin: d3.min(json, function(datum) {return datum.death}),
+                yMin: d3.min(json, function(datum: ApiData) {return datum.death}),
                 minDate: this.getDate(d3.min(json, function(datum) {return datum.date})),
                 maxDate: this.getDate(d3.max(json, function(datum) {return datum.date}))
             }
@@ -56,7 +82,10 @@ class Graph extends Component {
     }
 
     // convert yyyymmdd integer to Date object
-    getDate(numberDate) {
+    getDate(numberDate?: number) {
+        if(!numberDate) {
+            return new Date;
+        }
         const year = Math.floor(numberDate / 10000);
         const month = Math.floor((numberDate) / 100) - 1 - (year * 100);
         const day = numberDate - (year * 10000) - ((month + 1)* 100);
@@ -65,9 +94,9 @@ class Graph extends Component {
     }
 
     // get derivations of the discreet data
-    derive(data, derivationNumber) {
+    derive(data: ApiData[], derivationNumber: number): ApiData[] {
         if (derivationNumber < 0) {
-            return;
+            throw new Error;
         }
 
         if (derivationNumber === 0) {
@@ -83,10 +112,10 @@ class Graph extends Component {
     }
 
     // get graphable array
-    cumulativeData(data) {
-        data = data.map(datum => {
+    cumulativeData(data: ApiData[]) {
+        let pointsData: Points[] = data.map(datum => {
             return { x: this.getDate(datum.date), y: datum.death? datum.death : 0}})
-        return data
+        return pointsData
     }
 
     isDataLoaded() {
