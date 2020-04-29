@@ -7,9 +7,7 @@ import LineChart from './LineChart';
 class Graph extends Component {
     constructor() {
         super();
-        this.state = {data: [], covidData: {}};
-
-        this.GetWorldStatistics = this.GetWorldStatistics.bind(this);
+        this.state = {covidData: {}};
     }
 
     componentDidMount() {
@@ -25,24 +23,34 @@ class Graph extends Component {
             return response.json();
         })
         .then(json => {
-            this.setState({ data: json, covidData: [
+            let graphSettings = {
+                yMin: d3.min(json, function(datum) {return datum.death}),
+                minDate: this.getDate(d3.min(json, function(datum) {return datum.date})),
+                maxDate: this.getDate(d3.max(json, function(datum) {return datum.date}))
+            }
+            let graphData = [
                 {
                     points: this.cumulativeData(json),
-                    yMin: d3.min(json, function(datum) {return datum.death}),
                     yMax: d3.max(json, function(datum) {return datum.death}),
-                    minDate: this.getDate(d3.min(json, function(datum) {return datum.date})),
-                    maxDate: this.getDate(d3.max(json, function(datum) {return datum.date})),
+                    yMin: null,
+                    minDate: null,
+                    maxDate: null,
                     title: "US total deaths"
                 },
                 {
                     points: this.cumulativeData(this.derive(json, 1)),
-                    yMin: d3.min(json, function(datum) {return datum.death}),
                     yMax: d3.max(json, function(datum) {return datum.death}),
-                    minDate: this.getDate(d3.min(json, function(datum) {return datum.date})),
-                    maxDate: this.getDate(d3.max(json, function(datum) {return datum.date})),
+                    yMin: null,
+                    minDate: null,
+                    maxDate: null,
                     title: "US deaths/day"
                 }
-            ]})
+            ]
+
+            graphData.forEach(graph => {
+                Object.assign(graph, graphSettings)
+            })
+            this.setState({covidData: graphData})
             this.render()
         })
     }
