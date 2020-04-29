@@ -27,7 +27,7 @@ class LineChart extends Component <Props> {
     
         let xAxis = d3Axis.axisBottom(xScale)
         xAxis.ticks(d3Time.timeMonth.every(1));
-        d3Selection.select(`[title="${data.title}"]`).append("g").attr("transform", `translate(40,${height})`).call(xAxis)
+        d3Selection.select(`[data-title="${data.title}"]`).append("g").attr("transform", `translate(40,${height})`).call(xAxis)
 
         let yScale = d3Scale.scaleLinear()
                         .domain([data.yMin, data.yMax])
@@ -36,7 +36,7 @@ class LineChart extends Component <Props> {
         let yAxis = d3Axis.axisLeft(yScale)
         yAxis.ticks(5);
         d3Selection.select(`[data-title="${data.title}"]`).append("g").attr("transform", `translate(40,0)`).call(yAxis)
-        d3Selection.select(`[date-title="${data.title}"]`).attr("viewBox", "0 0 630 330")
+        d3Selection.select(`[data-title="${data.title}"]`).attr("viewBox", "0 0 630 330")
     }
 
 
@@ -52,7 +52,7 @@ class LineChart extends Component <Props> {
                         .domain([data.yMin, data.yMax])
                         .range([height, 30])
         return (
-            <svg width={"80vw"} height={"50vw"} data-title={data.title}>
+            <svg width={"80vw"} height={"60vh"} data-title={data.title}>
                 <g>
                     <text
                         x={(width+30)/2}
