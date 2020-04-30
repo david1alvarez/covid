@@ -35,16 +35,20 @@ class App extends React.Component {
     }
 
     render() {
-        return (
-            <div className="App">
-                <header className="App-header">
-                    <div>Global COVID 19 stats:</div>
-                    <div>cases: {this.state.data.cases}</div>
-                    <div>deaths: {this.state.data.deaths}</div>
-                    <div>recovered: {this.state.data.recovered}</div>
-                </header>
-            </div>
-        );
+        if (this.state.data.cases === 0) {
+            return <div className="App">Loading Global Data...</div>;
+        } else {
+            return (
+                <div className="App">
+                    <header className="App-header">
+                        <div>Global COVID 19 stats:</div>
+                        <div>cases: {this.state.data.cases}</div>
+                        <div>deaths: {this.state.data.deaths}</div>
+                        <div>recovered: {this.state.data.recovered}</div>
+                    </header>
+                </div>
+            );
+        }
     }
 }
 
